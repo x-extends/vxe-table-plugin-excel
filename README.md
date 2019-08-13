@@ -17,11 +17,11 @@ npm install xe-utils vxe-table vxe-table-plugin-excel
 ```javascript
 import Vue from 'vue'
 import VXETable from 'vxe-table'
-import VXETablePluginElement from 'vxe-table-plugin-excel'
+import VXETablePluginExcel from 'vxe-table-plugin-excel'
 import 'vxe-table-plugin-excel/dist/style.css'
 
 Vue.use(VXETable)
-VXETable.use(VXETablePluginElement)
+VXETable.use(VXETablePluginExcel)
 ```
 
 ## Demo
