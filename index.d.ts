@@ -1,7 +1,7 @@
-import VXETable from 'xe-table'
+import VXETable from 'vxe-table'
 
 export interface VXETablePluginExcelStatic {
-  install(VXETable: typeof VXETable): void;
+  install(xTable: typeof VXETable): void;
 }
 
 /**
