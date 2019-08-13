@@ -3,53 +3,55 @@ $vxe-excel-column-checked-border-color: #409eff;
 
 /*excel*/
 .vxe-table {
-  &.vxe-excel {
-    &.c--checked {
-      cursor: default;
-      .vxe-header--column {
-        .vxe-resizable {
-          cursor: default;
-        }
-      }
-    }
-    .vxe-header--column {
-      padding: 4px 0;
-      font-size: 12px;
-      transition: none;
-      cursor: default;
-      .vxe-sort-wrapper,
-      .vxe-filter-wrapper {
-        display: none;
-      }
-    }
-    .vxe-body--column {
-      padding: 0;
-      transition: none;
-      height: inherit;
-      line-height: 24px;
-      vertical-align: top;
-      cursor: cell;
-      &.col--actived {
-        .vxe-cell {
-          padding: 0;
-        }
-      }
-      .vxe-cell {
-        padding: 0 2px;
-        word-break: break-all;
-        .vxe-input--wrapper {
-          height: inherit;
-          position: relative;
-          .vxe-textarea {
-            position: absolute;
-            overflow: hidden;
-            padding: 0 2px;
+  &.vxe-editable {
+    &.vxe-excel {
+      &.c--checked {
+        cursor: default;
+        .vxe-header--column {
+          .vxe-resizable {
+            cursor: default;
           }
-          .vxe-textarea,
-          .vxe-textarea:focus {
-            border-radius: 0;
-            border: 0;
-            outline: $vxe-excel-column-checked-border-width solid $vxe-excel-column-checked-border-color;
+        }
+      }
+      .vxe-header--column {
+        padding: 4px 0;
+        font-size: 12px;
+        transition: none;
+        cursor: default;
+        .vxe-sort-wrapper,
+        .vxe-filter-wrapper {
+          display: none;
+        }
+      }
+      .vxe-body--column {
+        padding: 0;
+        transition: none;
+        height: auto;
+        line-height: 24px;
+        vertical-align: top;
+        cursor: cell;
+        &.col--actived {
+          .vxe-cell {
+            padding: 0;
+          }
+        }
+        .vxe-cell {
+          padding: 0 2px;
+          word-break: break-all;
+          .vxe-input--wrapper {
+            height: inherit;
+            position: relative;
+            .vxe-textarea {
+              position: absolute;
+              overflow: hidden;
+              padding: 0 2px;
+            }
+            .vxe-textarea,
+            .vxe-textarea:focus {
+              border-radius: 0;
+              border: 0;
+              outline: $vxe-excel-column-checked-border-width solid $vxe-excel-column-checked-border-color;
+            }
           }
         }
       }
