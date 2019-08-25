@@ -366,8 +366,8 @@
           renderer = _ref3.renderer,
           v = _ref3.v;
 
-      if (v !== 'v2') {
-        throw new Error('[vxe-table] V2 version is required.');
+      if (v === 'v1') {
+        throw new Error('[vxe-table] >= V2 version is required.');
       } // 继承 Table
 
 
