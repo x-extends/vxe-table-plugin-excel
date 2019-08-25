@@ -334,8 +334,8 @@ const renderMap = {
 
 export const VXETablePluginExcel = {
   install ({ Vue, Table, renderer, v }) {
-    if (v !== 'v2') {
-      throw new Error('[vxe-table] V2 version is required.')
+    if (v === 'v1') {
+      throw new Error('[vxe-table] >= V2 version is required.')
     }
     // 继承 Table
     XEUtils.assign(Excel.props, Table.props)
