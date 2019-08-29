@@ -1,6 +1,6 @@
 {
   "name": "vxe-table-plugin-excel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "vxe-table plugin to implement simple Excel spreadsheets.",
   "scripts": {
     "lib": "gulp build"
