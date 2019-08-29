@@ -31,7 +31,7 @@ VXETable.use(VXETablePluginExcel)
   ref="xExcel"
   max-height="600"
   :columns="columns"
-  :data.sync="tableData">
+  :data="tableData">
 </vxe-excel>
 ```
 

@@ -360,11 +360,11 @@
     }
   };
   var VXETablePluginExcel = {
-    install: function install(_ref3) {
-      var Vue = _ref3.Vue,
-          Table = _ref3.Table,
-          renderer = _ref3.renderer,
-          v = _ref3.v;
+    install: function install(VXETable) {
+      var Vue = VXETable.Vue,
+          Table = VXETable.Table,
+          renderer = VXETable.renderer,
+          v = VXETable.v;
 
       if (v === 'v1') {
         throw new Error('[vxe-table-plugin-excel] >= V2 version is required.');
