@@ -44,7 +44,13 @@ var excelContextMenu = {
     }, {
       code: 'clearData',
       name: '清除内容(Del)'
-    }], [{
+    }], // [
+    //   {
+    //     code: 'merge',
+    //     name: '合并单元格'
+    //   }
+    // ],
+    [{
       code: 'filter',
       name: '筛选',
       children: [{
@@ -82,6 +88,10 @@ var Excel = {
     return {
       excelStore: {
         uploadRows: []
+      },
+      mergeStore: {
+        colList: [],
+        rowList: []
       }
     };
   },
@@ -93,6 +103,7 @@ var Excel = {
         border: true,
         resizable: true,
         showOverflow: null,
+        // spanMethod: this.cellSpanMethod,
         contextMenu: excelContextMenu,
         mouseConfig: {
           selected: true,
@@ -212,6 +223,63 @@ var Excel = {
             isHeader: false
           });
           break;
+
+        case 'merge':
+          var _$table$getMouseCheck = $table.getMouseCheckeds(),
+              columns = _$table$getMouseCheck.columns,
+              rows = _$table$getMouseCheck.rows;
+
+          var _this$mergeStore = this.mergeStore,
+              colList = _this$mergeStore.colList,
+              rowList = _this$mergeStore.rowList;
+
+          if (rows.length && columns.length) {
+            rows.forEach(function (row) {
+              return rowList.indexOf(row) === -1 ? rowList.push(row) : 0;
+            });
+            columns.forEach(function (column) {
+              return colList.indexOf(column) === -1 ? colList.push(column) : 0;
+            });
+          }
+
+          break;
+      }
+    },
+    cellSpanMethod: function cellSpanMethod(params) {
+      var row = params.row,
+          $rowIndex = params.$rowIndex,
+          column = params.column,
+          data = params.data;
+      var _this$mergeStore2 = this.mergeStore,
+          colList = _this$mergeStore2.colList,
+          rowList = _this$mergeStore2.rowList;
+
+      if (colList.indexOf(column) > -1) {
+        var prevRow = data[$rowIndex - 1];
+        var nextRow = data[$rowIndex + 1];
+        var isMerged = rowList.indexOf(row) > -1;
+
+        if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
+          return {
+            rowspan: 0,
+            colspan: 0
+          };
+        } else {
+          var countRowspan = 1;
+
+          if (isMerged) {
+            while (nextRow && rowList.indexOf(nextRow) > -1) {
+              nextRow = data[++countRowspan + $rowIndex];
+            }
+          }
+
+          if (countRowspan > 1) {
+            return {
+              rowspan: countRowspan,
+              colspan: 1
+            };
+          }
+        }
       }
     }
   }

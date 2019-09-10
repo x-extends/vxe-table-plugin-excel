@@ -52,6 +52,12 @@ const excelContextMenu = {
           name: '清除内容(Del)'
         }
       ],
+      // [
+      //   {
+      //     code: 'merge',
+      //     name: '合并单元格'
+      //   }
+      // ],
       [
         {
           code: 'filter',
@@ -105,6 +111,10 @@ const Excel = {
     return {
       excelStore: {
         uploadRows: []
+      },
+      mergeStore: {
+        colList: [],
+        rowList: []
       }
     }
   },
@@ -115,6 +125,7 @@ const Excel = {
         border: true,
         resizable: true,
         showOverflow: null,
+        // spanMethod: this.cellSpanMethod,
         contextMenu: excelContextMenu,
         mouseConfig: { selected: true, checked: true },
         keyboardConfig: { isArrow: true, isDel: true, isTab: true, isCut: true, isEdit: true },
@@ -204,6 +215,36 @@ const Excel = {
         case 'exportAll':
           $table.exportCsv({ isHeader: false })
           break
+        case 'merge':
+          const { columns, rows } = $table.getMouseCheckeds()
+          const { colList, rowList } = this.mergeStore
+          if (rows.length && columns.length) {
+            rows.forEach(row => rowList.indexOf(row) === -1 ? rowList.push(row) : 0)
+            columns.forEach(column => colList.indexOf(column) === -1 ? colList.push(column) : 0)
+          }
+          break
+      }
+    },
+    cellSpanMethod (params) {
+      let { row, $rowIndex, column, data } = params
+      const { colList, rowList } = this.mergeStore
+      if (colList.indexOf(column) > -1) {
+        let prevRow = data[$rowIndex - 1]
+        let nextRow = data[$rowIndex + 1]
+        let isMerged = rowList.indexOf(row) > -1
+        if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
+          return { rowspan: 0, colspan: 0 }
+        } else {
+          let countRowspan = 1
+          if (isMerged) {
+            while (nextRow && rowList.indexOf(nextRow) > -1) {
+              nextRow = data[++countRowspan + $rowIndex]
+            }
+          }
+          if (countRowspan > 1) {
+            return { rowspan: countRowspan, colspan: 1 }
+          }
+        }
       }
     }
   }
