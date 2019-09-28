@@ -1,24 +1,31 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("vxe-table-plugin-excel", [], factory);
+    define("vxe-table-plugin-excel", ["exports", "xe-utils"], factory);
   } else if (typeof exports !== "undefined") {
-    factory();
+    factory(exports, require("xe-utils"));
   } else {
     var mod = {
       exports: {}
     };
-    factory();
+    factory(mod.exports, global.XEUtils);
     global.VXETablePluginExcel = mod.exports.default;
   }
-})(this, function () {
+})(this, function (_exports, _xeUtils) {
   "use strict";
 
-  var _a;
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports["default"] = _exports.VXETablePluginExcel = _exports.Excel = _exports.EXCEL_METHODS_NAME = void 0;
+  _xeUtils = _interopRequireDefault(_xeUtils);
 
-  exports.__esModule = true;
+  var _methods;
 
-  var xe_utils_1 = require("xe-utils");
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  // import { VXETable } from 'vxe-table'
   var excelEditConfig = {
     trigger: 'dblclick',
     mode: 'cell',
@@ -90,13 +97,14 @@
     }
   };
   var EXCEL_METHODS_NAME;
+  _exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME;
 
   (function (EXCEL_METHODS_NAME) {
     EXCEL_METHODS_NAME["CONTEXT_MENU_CLICK_EVENT"] = "contextMenuClickEvent";
     EXCEL_METHODS_NAME["CELL_SPAN_METHOD"] = "cellSpanMethod";
-  })(EXCEL_METHODS_NAME = exports.EXCEL_METHODS_NAME || (exports.EXCEL_METHODS_NAME = {}));
+  })(EXCEL_METHODS_NAME || (_exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME = {}));
 
-  exports.Excel = {
+  var Excel = {
     name: 'VxeExcel',
     props: {
       columns: Array
@@ -115,11 +123,9 @@
     },
     computed: {
       tableProps: function tableProps() {
-        var _a = this,
-            $props = _a.$props,
-            editConfig = _a.editConfig;
-
-        return xe_utils_1["default"].assign({}, $props, {
+        var $props = this.$props,
+            editConfig = this.editConfig;
+        return _xeUtils["default"].assign({}, $props, {
           border: true,
           resizable: true,
           showOverflow: null,
@@ -165,24 +171,22 @@
       }
     },
     render: function render(h) {
-      var _a = this,
-          $slots = _a.$slots,
-          $listeners = _a.$listeners,
-          tableProps = _a.tableProps;
-
+      var $slots = this.$slots,
+          $listeners = this.$listeners,
+          tableProps = this.tableProps;
       return h('vxe-table', {
         "class": 'vxe-excel',
         props: tableProps,
-        on: xe_utils_1["default"].assign({}, $listeners, {
+        on: _xeUtils["default"].assign({}, $listeners, {
           'context-menu-click': this.contextMenuClickEvent
         }),
         ref: 'xTable'
       }, $slots["default"]);
     },
-    methods: (_a = {}, _a[EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] = function (_a, evnt) {
-      var menu = _a.menu,
-          row = _a.row,
-          column = _a.column;
+    methods: (_methods = {}, _defineProperty(_methods, EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT, function (_ref, evnt) {
+      var menu = _ref.menu,
+          row = _ref.row,
+          column = _ref.column;
       var $table = this.$refs.xTable;
       var property = column.property;
 
@@ -219,7 +223,7 @@
           $table.filter(property).then(function (options) {
             if (options.length) {
               var option = options[0];
-              option.data = xe_utils_1["default"].get(row, property);
+              option.data = _xeUtils["default"].get(row, property);
               option.checked = true;
             }
           }).then(function () {
@@ -246,33 +250,33 @@
           break;
 
         case 'merge':
-          var _b = $table.getMouseCheckeds(),
-              columns = _b.columns,
-              rows = _b.rows;
+          var _$table$getMouseCheck = $table.getMouseCheckeds(),
+              columns = _$table$getMouseCheck.columns,
+              rows = _$table$getMouseCheck.rows;
 
-          var _c = this.mergeStore,
-              colList_1 = _c.colList,
-              rowList_1 = _c.rowList;
+          var _this$mergeStore = this.mergeStore,
+              colList = _this$mergeStore.colList,
+              rowList = _this$mergeStore.rowList;
 
           if (rows.length && columns.length) {
             rows.forEach(function (row) {
-              return rowList_1.indexOf(row) === -1 ? rowList_1.push(row) : 0;
+              return rowList.indexOf(row) === -1 ? rowList.push(row) : 0;
             });
             columns.forEach(function (column) {
-              return colList_1.indexOf(column) === -1 ? colList_1.push(column) : 0;
+              return colList.indexOf(column) === -1 ? colList.push(column) : 0;
             });
           }
 
           break;
       }
-    }, _a[EXCEL_METHODS_NAME.CELL_SPAN_METHOD] = function (params) {
+    }), _defineProperty(_methods, EXCEL_METHODS_NAME.CELL_SPAN_METHOD, function (params) {
       var row = params.row,
           $rowIndex = params.$rowIndex,
           column = params.column,
           data = params.data;
-      var _a = this.mergeStore,
-          colList = _a.colList,
-          rowList = _a.rowList;
+      var _this$mergeStore2 = this.mergeStore,
+          colList = _this$mergeStore2.colList,
+          rowList = _this$mergeStore2.rowList;
 
       if (colList.indexOf(column) > -1) {
         var prevRow = data[$rowIndex - 1];
@@ -301,8 +305,9 @@
           }
         }
       }
-    }, _a)
+    }), _methods)
   };
+  _exports.Excel = Excel;
   var rowHeight = 24;
 
   function getCursorPosition(textarea) {
@@ -334,8 +339,8 @@
   var renderMap = {
     cell: {
       autofocus: '.vxe-textarea',
-      renderEdit: function renderEdit(h, editRender, params, _a) {
-        var $excel = _a.$excel;
+      renderEdit: function renderEdit(h, editRender, params, _ref2) {
+        var $excel = _ref2.$excel;
         var excelStore = $excel.excelStore;
         var uploadRows = excelStore.uploadRows;
         var row = params.row,
@@ -344,12 +349,12 @@
         return [h('div', {
           "class": 'vxe-input--wrapper vxe-excel-cell',
           style: {
-            height: column.renderHeight - 1 + "px"
+            height: "".concat(column.renderHeight - 1, "px")
           }
         }, [h('textarea', {
           "class": 'vxe-textarea',
           style: {
-            width: column.renderWidth + "px"
+            width: "".concat(column.renderWidth, "px")
           },
           domProps: {
             value: model.value
@@ -362,9 +367,9 @@
 
               if (inpElem.scrollHeight > inpElem.offsetHeight) {
                 if (uploadRows.indexOf(row) === -1) {
-                  inpElem.style.width = inpElem.offsetWidth + 20 + "px";
+                  inpElem.style.width = "".concat(inpElem.offsetWidth + 20, "px");
                 } else {
-                  inpElem.style.height = inpElem.scrollHeight + "px";
+                  inpElem.style.height = "".concat(inpElem.scrollHeight, "px");
                 }
               }
             },
@@ -379,17 +384,17 @@
               if (evnt.altKey && evnt.keyCode === 13) {
                 evnt.preventDefault();
                 evnt.stopPropagation();
-                var rangeData_1 = getCursorPosition(inpElem);
-                var pos_1 = rangeData_1.end;
+                var rangeData = getCursorPosition(inpElem);
+                var pos = rangeData.end;
                 var cellValue = inpElem.value;
-                cellValue = cellValue.slice(0, pos_1) + "\n" + cellValue.slice(pos_1, cellValue.length);
+                cellValue = "".concat(cellValue.slice(0, pos), "\n").concat(cellValue.slice(pos, cellValue.length));
                 inpElem.value = cellValue;
                 model.update = true;
                 model.value = cellValue;
-                inpElem.style.height = (Math.floor(inpElem.offsetHeight / rowHeight) + 1) * rowHeight + "px";
+                inpElem.style.height = "".concat((Math.floor(inpElem.offsetHeight / rowHeight) + 1) * rowHeight, "px");
                 setTimeout(function () {
-                  rangeData_1.start = rangeData_1.end = ++pos_1;
-                  setCursorPosition(inpElem, rangeData_1);
+                  rangeData.start = rangeData.end = ++pos;
+                  setCursorPosition(inpElem, rangeData);
                 });
               }
             }
@@ -401,7 +406,7 @@
             column = params.column;
         return [h('span', {
           domProps: {
-            innerHTML: xe_utils_1["default"].escape(xe_utils_1["default"].get(row, column.property)).replace(/\n/g, '<br>')
+            innerHTML: _xeUtils["default"].escape(_xeUtils["default"].get(row, column.property)).replace(/\n/g, '<br>')
           }
         })];
       }
@@ -411,7 +416,7 @@
    * 基于 vxe-table 表格的增强插件，实现简单的 Excel 表格
    */
 
-  exports.VXETablePluginExcel = {
+  var VXETablePluginExcel = {
     install: function install(xtable) {
       var Vue = xtable.Vue,
           Table = xtable.Table,
@@ -423,22 +428,26 @@
       } // 继承 Table
 
 
-      xe_utils_1["default"].assign(exports.Excel.props, Table.props);
-      xe_utils_1["default"].each(Table.methods, function (cb, name) {
-        exports.Excel.methods[name] = function () {
+      _xeUtils["default"].assign(Excel.props, Table.props);
+
+      _xeUtils["default"].each(Table.methods, function (cb, name) {
+        Excel.methods[name] = function () {
           return this.$refs.xTable[name].apply(this.$refs.xTable, arguments);
         };
       }); // 添加到渲染器
 
+
       renderer.mixin(renderMap); // 注册组件
 
-      Vue.component(exports.Excel.name, exports.Excel);
+      Vue.component(Excel.name, Excel);
     }
   };
+  _exports.VXETablePluginExcel = VXETablePluginExcel;
 
   if (typeof window !== 'undefined' && window.VXETable) {
-    window.VXETable.use(exports.VXETablePluginExcel);
+    window.VXETable.use(VXETablePluginExcel);
   }
 
-  exports["default"] = exports.VXETablePluginExcel;
+  var _default = VXETablePluginExcel;
+  _exports["default"] = _default;
 });

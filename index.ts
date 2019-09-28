@@ -1,5 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
-import { VXETable } from 'vxe-table'
+// import { VXETable } from 'vxe-table'
 
 const excelEditConfig = {
   trigger: 'dblclick',
@@ -370,7 +370,7 @@ const renderMap = {
  * 基于 vxe-table 表格的增强插件，实现简单的 Excel 表格
  */
 export const VXETablePluginExcel = {
-  install (xtable: typeof VXETable) {
+  install (xtable: any) {
     let { Vue, Table, renderer, v } = xtable
     if (v === 'v1') {
       throw new Error('[vxe-table-plugin-excel] >= V2 version is required.')
@@ -386,6 +386,12 @@ export const VXETablePluginExcel = {
     renderer.mixin(renderMap)
     // 注册组件
     Vue.component(Excel.name, Excel)
+  }
+}
+
+declare global {
+  interface Window {
+    VXETable: any
   }
 }
 
