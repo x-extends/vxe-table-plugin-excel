@@ -1,4 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
+import { VXETable } from 'vxe-table'
 
 const excelEditConfig = {
   trigger: 'dblclick',
@@ -102,13 +103,28 @@ const excelContextMenu = {
   }
 }
 
-const Excel = {
+export enum EXCEL_METHODS_NAME {
+  CONTEXT_MENU_CLICK_EVENT = 'contextMenuClickEvent',
+  CELL_SPAN_METHOD = 'cellSpanMethod'
+}
+
+export interface vExcelData {
+  excelStore: {
+    uploadRows: Array<any>;
+  }
+  mergeStore: {
+    colList: Array<any>;
+    rowList: Array<any>;
+  }
+}
+
+export const Excel = {
   name: 'VxeExcel',
   props: {
     columns: Array
   },
   data () {
-    return {
+    let data: vExcelData =  {
       excelStore: {
         uploadRows: []
       },
@@ -117,6 +133,7 @@ const Excel = {
         rowList: []
       }
     }
+    return data
   },
   computed: {
     tableProps () {
@@ -146,7 +163,7 @@ const Excel = {
     }
   },
   watch: {
-    columns (value) {
+    columns (value: Array<any>) {
       this.loadColumn(value)
     }
   },
@@ -156,7 +173,7 @@ const Excel = {
       this.loadColumn(this.columns)
     }
   },
-  render (h) {
+  render (h: Function) {
     let { $slots, $listeners, tableProps } = this
     return h('vxe-table', {
       class: 'vxe-excel',
@@ -168,7 +185,7 @@ const Excel = {
     }, $slots.default)
   },
   methods: {
-    contextMenuClickEvent ({ menu, row, column }, evnt) {
+    [EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] ({ menu, row, column }: any, evnt: any) {
       let $table = this.$refs.xTable
       let { property } = column
       switch (menu.code) {
@@ -195,7 +212,7 @@ const Excel = {
           break
         case 'filterSelect':
           $table.filter(property)
-            .then(options => {
+            .then((options: Array<any>) => {
               if (options.length) {
                 let option = options[0]
                 option.data = XEUtils.get(row, property)
@@ -219,13 +236,13 @@ const Excel = {
           const { columns, rows } = $table.getMouseCheckeds()
           const { colList, rowList } = this.mergeStore
           if (rows.length && columns.length) {
-            rows.forEach(row => rowList.indexOf(row) === -1 ? rowList.push(row) : 0)
-            columns.forEach(column => colList.indexOf(column) === -1 ? colList.push(column) : 0)
+            rows.forEach((row: any) => rowList.indexOf(row) === -1 ? rowList.push(row) : 0)
+            columns.forEach((column: any) => colList.indexOf(column) === -1 ? colList.push(column) : 0)
           }
           break
       }
     },
-    cellSpanMethod (params) {
+    [EXCEL_METHODS_NAME.CELL_SPAN_METHOD] (params: any) {
       let { row, $rowIndex, column, data } = params
       const { colList, rowList } = this.mergeStore
       if (colList.indexOf(column) > -1) {
@@ -252,43 +269,19 @@ const Excel = {
 
 const rowHeight = 24
 
-function getCursorPosition (textarea) {
+function getCursorPosition (textarea: HTMLTextAreaElement) {
   let rangeData = { text: '', start: 0, end: 0 }
   if (textarea.setSelectionRange) {
     rangeData.start = textarea.selectionStart
     rangeData.end = textarea.selectionEnd
-    rangeData.text = (rangeData.start !== rangeData.end) ? textarea.value.substring(rangeData.start, rangeData.end) : ''
-  } else if (document.selection) {
-    let index = 0
-    let range = document.selection.createRange()
-    let textRange = document.body.createTextRange()
-    textRange.moveToElementText(textarea)
-    rangeData.text = range.text
-    rangeData.bookmark = range.getBookmark()
-    for (; textRange.compareEndPoints('StartToStart', range) < 0 && range.moveStart('character', -1) !== 0; index++) {
-      if (textarea.value.charAt(index) === '\n') {
-        index++
-      }
-    }
-    rangeData.start = index
-    rangeData.end = rangeData.text.length + rangeData.start
   }
   return rangeData
 }
 
-function setCursorPosition (textarea, rangeData) {
+function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: any) {
   if (textarea.setSelectionRange) {
     textarea.focus()
     textarea.setSelectionRange(rangeData.start, rangeData.end)
-  } else if (textarea.createTextRange) {
-    let textRange = textarea.createTextRange()
-    if (textarea.value.length === rangeData.start) {
-      textRange.collapse(false)
-      textRange.select()
-    } else {
-      textRange.moveToBookmark(rangeData.bookmark)
-      textRange.select()
-    }
   }
 }
 
@@ -298,7 +291,7 @@ function setCursorPosition (textarea, rangeData) {
 const renderMap = {
   cell: {
     autofocus: '.vxe-textarea',
-    renderEdit (h, editRender, params, { $excel }) {
+    renderEdit (h: Function, editRender: any, params: any, { $excel }: any) {
       let { excelStore } = $excel
       let { uploadRows } = excelStore
       let { row, column } = params
@@ -319,7 +312,7 @@ const renderMap = {
               value: model.value
             },
             on: {
-              input (evnt) {
+              input (evnt: any) {
                 let inpElem = evnt.target
                 model.update = true
                 model.value = inpElem.value
@@ -331,12 +324,12 @@ const renderMap = {
                   }
                 }
               },
-              change (evnt) {
+              change (evnt: any) {
                 if (uploadRows.indexOf(row) === -1) {
                   uploadRows.push(row)
                 }
               },
-              keydown (evnt) {
+              keydown (evnt: any) {
                 let inpElem = evnt.target
                 if (evnt.altKey && evnt.keyCode === 13) {
                   evnt.preventDefault()
@@ -360,7 +353,7 @@ const renderMap = {
         ])
       ]
     },
-    renderCell (h, editRender, params) {
+    renderCell (h: Function, editRender: any, params: any) {
       let { row, column } = params
       return [
         h('span', {
@@ -373,17 +366,20 @@ const renderMap = {
   }
 }
 
+/**
+ * 基于 vxe-table 表格的增强插件，实现简单的 Excel 表格
+ */
 export const VXETablePluginExcel = {
-  install (VXETable) {
-    let { Vue, Table, renderer, v } = VXETable
+  install (xtable: typeof VXETable) {
+    let { Vue, Table, renderer, v } = xtable
     if (v === 'v1') {
       throw new Error('[vxe-table-plugin-excel] >= V2 version is required.')
     }
     // 继承 Table
     XEUtils.assign(Excel.props, Table.props)
-    XEUtils.each(Table.methods, (cb, name) => {
+    XEUtils.each(Table.methods, (cb: Function, name: EXCEL_METHODS_NAME) => {
       Excel.methods[name] = function () {
-        return this.$refs.xTable[name].apply(this.$refs.xTable[name], arguments)
+        return this.$refs.xTable[name].apply(this.$refs.xTable, arguments)
       }
     })
     // 添加到渲染器
