@@ -46,7 +46,7 @@
     "xe-utils": "^2.2.6"
   },
   "peerDependencies": {
-    "vxe-table": ">=2.2.0",
+    "vxe-table": ">=2.6.0",
     "xe-utils": ">=2.2.0"
   },
   "repository": {
