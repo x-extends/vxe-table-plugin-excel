@@ -1,5 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
-// import { VXETable } from 'vxe-table'
+import VXETable from 'vxe-table/lib/vxe-table'
 
 const excelEditConfig = {
   trigger: 'dblclick',
@@ -136,7 +136,7 @@ export const Excel = {
     return data
   },
   computed: {
-    tableProps () {
+    tableProps (this: any): any {
       let { $props, editConfig } = this
       return XEUtils.assign({}, $props, {
         border: true,
@@ -163,17 +163,17 @@ export const Excel = {
     }
   },
   watch: {
-    columns (value: Array<any>) {
+    columns (this: any, value: Array<any>) {
       this.loadColumn(value)
     }
   },
-  mounted () {
+  mounted (this: any) {
     let { columns } = this
     if (columns && columns.length) {
       this.loadColumn(this.columns)
     }
   },
-  render (h: Function) {
+  render (this: any, h: Function) {
     let { $slots, $listeners, tableProps } = this
     return h('vxe-table', {
       class: 'vxe-excel',
@@ -185,7 +185,7 @@ export const Excel = {
     }, $slots.default)
   },
   methods: {
-    [EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] ({ menu, row, column }: any, evnt: any) {
+    [EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] (this: any, { menu, row, column }: any, evnt: any) {
       let $table = this.$refs.xTable
       let { property } = column
       switch (menu.code) {
@@ -242,7 +242,7 @@ export const Excel = {
           break
       }
     },
-    [EXCEL_METHODS_NAME.CELL_SPAN_METHOD] (params: any) {
+    [EXCEL_METHODS_NAME.CELL_SPAN_METHOD] (this: any, params: any) {
       let { row, $rowIndex, column, data } = params
       const { colList, rowList } = this.mergeStore
       if (colList.indexOf(column) > -1) {
@@ -376,7 +376,7 @@ const renderMap = {
  * 基于 vxe-table 表格的增强插件，实现简单的 Excel 表格
  */
 export const VXETablePluginExcel = {
-  install (xtable: any) {
+  install (xtable: typeof VXETable) {
     let { Vue, Table, renderer, v } = xtable
     if (v === 'v1') {
       throw new Error('[vxe-table-plugin-excel] >= V2 version is required.')
@@ -384,7 +384,7 @@ export const VXETablePluginExcel = {
     // 继承 Table
     XEUtils.assign(Excel.props, Table.props)
     XEUtils.each(Table.methods, (cb: Function, name: EXCEL_METHODS_NAME) => {
-      Excel.methods[name] = function () {
+      Excel.methods[name] = function (this: any) {
         return this.$refs.xTable[name].apply(this.$refs.xTable, arguments)
       }
     })
