@@ -230,7 +230,7 @@ export const Excel = {
           $table.sort(property, 'desc')
           break
         case 'exportAll':
-          $table.exportCsv({ isHeader: false })
+          $table.exportData({ isHeader: false })
           break
         case 'merge':
           const { columns, rows } = $table.getMouseCheckeds()
