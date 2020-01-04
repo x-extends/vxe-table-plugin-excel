@@ -10,16 +10,14 @@
     factory(mod.exports, global.XEUtils);
     global.VXETablePluginExcel = mod.exports.default;
   }
-})(this, function (_exports, _xeUtils) {
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_exports, _xeUtils) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports["default"] = _exports.VXETablePluginExcel = _exports.Excel = _exports.EXCEL_METHODS_NAME = void 0;
+  _exports["default"] = _exports.VXETablePluginVirtualTree = _exports.EXCEL_METHODS_NAME = void 0;
   _xeUtils = _interopRequireDefault(_xeUtils);
-
-  var _methods;
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -103,210 +101,223 @@
     EXCEL_METHODS_NAME["CELL_SPAN_METHOD"] = "cellSpanMethod";
   })(EXCEL_METHODS_NAME || (_exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME = {}));
 
-  var Excel = {
-    name: 'VxeExcel',
-    props: {
-      columns: Array
-    },
-    data: function data() {
-      var data = {
-        excelStore: {
-          uploadRows: []
-        },
-        mergeStore: {
-          colList: [],
-          rowList: []
-        }
-      };
-      return data;
-    },
-    computed: {
-      tableProps: function tableProps() {
-        var $props = this.$props,
-            editConfig = this.editConfig;
-        return _xeUtils["default"].assign({}, $props, {
-          border: true,
-          resizable: true,
-          showOverflow: null,
-          // spanMethod: this.cellSpanMethod,
-          contextMenu: excelContextMenu,
-          mouseConfig: {
-            selected: true,
-            checked: true
+  function registerComponent(_ref) {
+    var _methods;
+
+    var Vue = _ref.Vue,
+        Table = _ref.Table;
+    var Excel = {
+      name: 'VxeExcel',
+      props: {
+        columns: Array
+      },
+      data: function data() {
+        var data = {
+          excelStore: {
+            uploadRows: []
           },
-          keyboardConfig: {
-            isArrow: true,
-            isDel: true,
-            isTab: true,
-            isCut: true,
-            isEdit: true
-          },
-          editConfig: Object.assign({}, excelEditConfig, editConfig),
-          optimization: {
-            scrollX: {
-              gt: 100,
-              oSize: 6,
-              rSize: 20
+          mergeStore: {
+            colList: [],
+            rowList: []
+          }
+        };
+        return data;
+      },
+      computed: {
+        tableProps: function tableProps() {
+          var $props = this.$props,
+              editConfig = this.editConfig;
+          return _xeUtils["default"].assign({}, $props, {
+            border: true,
+            resizable: true,
+            showOverflow: null,
+            // spanMethod: this.cellSpanMethod,
+            contextMenu: excelContextMenu,
+            mouseConfig: {
+              selected: true,
+              checked: true
             },
-            scrollY: {
-              gt: 100,
-              oSize: 30,
-              rSize: 80
+            keyboardConfig: {
+              isArrow: true,
+              isDel: true,
+              isEnter: true,
+              isTab: true,
+              isCut: true,
+              isEdit: true
+            },
+            editConfig: Object.assign({}, excelEditConfig, editConfig),
+            optimization: {
+              scrollX: {
+                gt: 100
+              },
+              scrollY: {
+                gt: 100
+              }
             }
-          }
-        });
-      }
-    },
-    watch: {
-      columns: function columns(value) {
-        this.loadColumn(value);
-      }
-    },
-    mounted: function mounted() {
-      var columns = this.columns;
-
-      if (columns && columns.length) {
-        this.loadColumn(this.columns);
-      }
-    },
-    render: function render(h) {
-      var $slots = this.$slots,
-          $listeners = this.$listeners,
-          tableProps = this.tableProps;
-      return h('vxe-table', {
-        "class": 'vxe-excel',
-        props: tableProps,
-        on: _xeUtils["default"].assign({}, $listeners, {
-          'context-menu-click': this.contextMenuClickEvent
-        }),
-        ref: 'xTable'
-      }, $slots["default"]);
-    },
-    methods: (_methods = {}, _defineProperty(_methods, EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT, function (_ref, evnt) {
-      var menu = _ref.menu,
-          row = _ref.row,
-          column = _ref.column;
-      var $table = this.$refs.xTable;
-      var property = column.property;
-
-      switch (menu.code) {
-        case 'clip':
-          $table.handleCopyed(true, evnt);
-          break;
-
-        case 'copy':
-          $table.handleCopyed(false, evnt);
-          break;
-
-        case 'paste':
-          $table.handlePaste(evnt);
-          break;
-
-        case 'insert':
-          $table.insertAt({}, row);
-          break;
-
-        case 'remove':
-          $table.remove(row);
-          break;
-
-        case 'clearData':
-          $table.clearData(row, property);
-          break;
-
-        case 'clearFilter':
-          $table.clearFilter(column);
-          break;
-
-        case 'filterSelect':
-          $table.filter(property).then(function (options) {
-            if (options.length) {
-              var option = options[0];
-              option.data = _xeUtils["default"].get(row, property);
-              option.checked = true;
-            }
-          }).then(function () {
-            return $table.updateData();
           });
-          break;
+        }
+      },
+      watch: {
+        columns: function columns(value) {
+          this.loadColumn(value);
+        }
+      },
+      mounted: function mounted() {
+        var columns = this.columns;
 
-        case 'clearSort':
-          $table.clearSort();
-          break;
+        if (columns && columns.length) {
+          this.loadColumn(this.columns);
+        }
+      },
+      render: function render(h) {
+        var $slots = this.$slots,
+            $listeners = this.$listeners,
+            tableProps = this.tableProps;
+        return h('vxe-table', {
+          "class": 'vxe-excel',
+          props: tableProps,
+          on: _xeUtils["default"].assign({}, $listeners, {
+            'context-menu-click': this.contextMenuClickEvent
+          }),
+          ref: 'xTable'
+        }, $slots["default"]);
+      },
+      methods: (_methods = {}, _defineProperty(_methods, EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT, function (_ref2, evnt) {
+        var menu = _ref2.menu,
+            row = _ref2.row,
+            column = _ref2.column;
+        var $table = this.$refs.xTable;
+        var property = column.property;
 
-        case 'sortAsc':
-          $table.sort(property, 'asc');
-          break;
+        switch (menu.code) {
+          case 'clip':
+            $table.handleCopyed(true, evnt);
+            break;
 
-        case 'sortDesc':
-          $table.sort(property, 'desc');
-          break;
+          case 'copy':
+            $table.handleCopyed(false, evnt);
+            break;
 
-        case 'exportAll':
-          $table.exportCsv({
-            isHeader: false
-          });
-          break;
+          case 'paste':
+            $table.handlePaste(evnt);
+            break;
 
-        case 'merge':
-          var _$table$getMouseCheck = $table.getMouseCheckeds(),
-              columns = _$table$getMouseCheck.columns,
-              rows = _$table$getMouseCheck.rows;
+          case 'insert':
+            $table.insertAt({}, row);
+            break;
 
-          var _this$mergeStore = this.mergeStore,
-              colList = _this$mergeStore.colList,
-              rowList = _this$mergeStore.rowList;
+          case 'remove':
+            $table.remove(row);
+            break;
 
-          if (rows.length && columns.length) {
-            rows.forEach(function (row) {
-              return rowList.indexOf(row) === -1 ? rowList.push(row) : 0;
+          case 'clearData':
+            $table.clearData(row, property);
+            break;
+
+          case 'clearFilter':
+            $table.clearFilter(column);
+            break;
+
+          case 'filterSelect':
+            $table.filter(property).then(function (options) {
+              if (options.length) {
+                var option = options[0];
+                option.data = _xeUtils["default"].get(row, property);
+                option.checked = true;
+              }
+            }).then(function () {
+              return $table.updateData();
             });
-            columns.forEach(function (column) {
-              return colList.indexOf(column) === -1 ? colList.push(column) : 0;
+            break;
+
+          case 'clearSort':
+            $table.clearSort();
+            break;
+
+          case 'sortAsc':
+            $table.sort(property, 'asc');
+            break;
+
+          case 'sortDesc':
+            $table.sort(property, 'desc');
+            break;
+
+          case 'exportAll':
+            $table.exportData({
+              isHeader: false
             });
-          }
+            break;
 
-          break;
-      }
-    }), _defineProperty(_methods, EXCEL_METHODS_NAME.CELL_SPAN_METHOD, function (params) {
-      var row = params.row,
-          $rowIndex = params.$rowIndex,
-          column = params.column,
-          data = params.data;
-      var _this$mergeStore2 = this.mergeStore,
-          colList = _this$mergeStore2.colList,
-          rowList = _this$mergeStore2.rowList;
+          case 'merge':
+            var _$table$getMouseCheck = $table.getMouseCheckeds(),
+                columns = _$table$getMouseCheck.columns,
+                rows = _$table$getMouseCheck.rows;
 
-      if (colList.indexOf(column) > -1) {
-        var prevRow = data[$rowIndex - 1];
-        var nextRow = data[$rowIndex + 1];
-        var isMerged = rowList.indexOf(row) > -1;
+            var _this$mergeStore = this.mergeStore,
+                colList = _this$mergeStore.colList,
+                rowList = _this$mergeStore.rowList;
 
-        if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
-          return {
-            rowspan: 0,
-            colspan: 0
-          };
-        } else {
-          var countRowspan = 1;
-
-          if (isMerged) {
-            while (nextRow && rowList.indexOf(nextRow) > -1) {
-              nextRow = data[++countRowspan + $rowIndex];
+            if (rows.length && columns.length) {
+              rows.forEach(function (row) {
+                return rowList.indexOf(row) === -1 ? rowList.push(row) : 0;
+              });
+              columns.forEach(function (column) {
+                return colList.indexOf(column) === -1 ? colList.push(column) : 0;
+              });
             }
-          }
 
-          if (countRowspan > 1) {
+            break;
+        }
+      }), _defineProperty(_methods, EXCEL_METHODS_NAME.CELL_SPAN_METHOD, function (params) {
+        var row = params.row,
+            $rowIndex = params.$rowIndex,
+            column = params.column,
+            data = params.data;
+        var _this$mergeStore2 = this.mergeStore,
+            colList = _this$mergeStore2.colList,
+            rowList = _this$mergeStore2.rowList;
+
+        if (colList.indexOf(column) > -1) {
+          var prevRow = data[$rowIndex - 1];
+          var nextRow = data[$rowIndex + 1];
+          var isMerged = rowList.indexOf(row) > -1;
+
+          if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
             return {
-              rowspan: countRowspan,
-              colspan: 1
+              rowspan: 0,
+              colspan: 0
             };
+          } else {
+            var countRowspan = 1;
+
+            if (isMerged) {
+              while (nextRow && rowList.indexOf(nextRow) > -1) {
+                nextRow = data[++countRowspan + $rowIndex];
+              }
+            }
+
+            if (countRowspan > 1) {
+              return {
+                rowspan: countRowspan,
+                colspan: 1
+              };
+            }
           }
         }
-      }
-    }), _methods)
-  };
-  _exports.Excel = Excel;
+      }), _methods)
+    }; // 继承 Table
+
+    _xeUtils["default"].assign(Excel.props, Table.props);
+
+    _xeUtils["default"].each(Table.methods, function (cb, name) {
+      Excel.methods[name] = function () {
+        return this.$refs.xTable[name].apply(this.$refs.xTable, arguments);
+      };
+    });
+
+    Vue.component(Excel.name, Excel);
+  }
+
   var rowHeight = 24;
 
   function getCursorPosition(textarea) {
@@ -338,8 +349,8 @@
   var renderMap = {
     cell: {
       autofocus: '.vxe-textarea',
-      renderEdit: function renderEdit(h, editRender, params, _ref2) {
-        var $excel = _ref2.$excel;
+      renderEdit: function renderEdit(h, editRender, params, _ref3) {
+        var $excel = _ref3.$excel;
         var excelStore = $excel.excelStore;
         var uploadRows = excelStore.uploadRows;
         var row = params.row,
@@ -348,7 +359,7 @@
         return [h('div', {
           "class": 'vxe-input--wrapper vxe-excel-cell',
           style: {
-            height: "".concat(column.renderHeight - 1, "px")
+            height: "".concat(column.renderHeight, "px")
           }
         }, [h('textarea', {
           "class": 'vxe-textarea',
@@ -412,41 +423,30 @@
     }
   };
   /**
-   * 基于 vxe-table 表格的增强插件，实现简单的 Excel 表格
+   * 基于 vxe-table 表格的增强插件，实现简单的虚拟树表格
    */
 
-  var VXETablePluginExcel = {
+  var VXETablePluginVirtualTree = {
     install: function install(xtable) {
-      var Vue = xtable.Vue,
-          Table = xtable.Table,
-          renderer = xtable.renderer,
+      var renderer = xtable.renderer,
           v = xtable.v;
 
       if (v === 'v1') {
-        throw new Error('[vxe-table-plugin-excel] >= V2 version is required.');
-      } // 继承 Table
-
-
-      _xeUtils["default"].assign(Excel.props, Table.props);
-
-      _xeUtils["default"].each(Table.methods, function (cb, name) {
-        Excel.methods[name] = function () {
-          return this.$refs.xTable[name].apply(this.$refs.xTable, arguments);
-        };
-      }); // 添加到渲染器
+        throw new Error('[vxe-table-plugin-virtual-tree] >= V2 version is required.');
+      } // 添加到渲染器
 
 
       renderer.mixin(renderMap); // 注册组件
 
-      Vue.component(Excel.name, Excel);
+      registerComponent(xtable);
     }
   };
-  _exports.VXETablePluginExcel = VXETablePluginExcel;
+  _exports.VXETablePluginVirtualTree = VXETablePluginVirtualTree;
 
   if (typeof window !== 'undefined' && window.VXETable) {
-    window.VXETable.use(VXETablePluginExcel);
+    window.VXETable.use(VXETablePluginVirtualTree);
   }
 
-  var _default = VXETablePluginExcel;
+  var _default = VXETablePluginVirtualTree;
   _exports["default"] = _default;
 });
