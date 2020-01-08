@@ -45,6 +45,7 @@ $vxe-excel-column-checked-border-color: #409eff;
               position: absolute;
               overflow: hidden;
               padding: 0 2px;
+              z-index: 1;
             }
             .vxe-textarea,
             .vxe-textarea:focus {

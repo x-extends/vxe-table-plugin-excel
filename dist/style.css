@@ -33,7 +33,8 @@
       .vxe-table.vxe-editable.vxe-excel .vxe-body--column .vxe-cell .vxe-input--wrapper .vxe-textarea {
         position: absolute;
         overflow: hidden;
-        padding: 0 2px; }
+        padding: 0 2px;
+        z-index: 1; }
       .vxe-table.vxe-editable.vxe-excel .vxe-body--column .vxe-cell .vxe-input--wrapper .vxe-textarea,
       .vxe-table.vxe-editable.vxe-excel .vxe-body--column .vxe-cell .vxe-input--wrapper .vxe-textarea:focus {
         border-radius: 0;
