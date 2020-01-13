@@ -348,7 +348,7 @@
 
   var renderMap = {
     cell: {
-      autofocus: '.vxe-textarea--inner',
+      autofocus: 'textarea',
       renderEdit: function renderEdit(h, editRender, params, _ref3) {
         var $excel = _ref3.$excel;
         var excelStore = $excel.excelStore;

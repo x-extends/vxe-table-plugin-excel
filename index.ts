@@ -302,7 +302,7 @@ function setCursorPosition (textarea: any, rangeData: posRangeData) {
  */
 const renderMap = {
   cell: {
-    autofocus: '.vxe-textarea--inner',
+    autofocus: 'textarea',
     renderEdit (h: Function, editRender: any, params: any, { $excel }: any) {
       let { excelStore } = $excel
       let { uploadRows } = excelStore
