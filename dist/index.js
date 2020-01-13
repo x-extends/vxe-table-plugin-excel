@@ -348,7 +348,7 @@
 
   var renderMap = {
     cell: {
-      autofocus: '.vxe-textarea',
+      autofocus: '.vxe-textarea--inner',
       renderEdit: function renderEdit(h, editRender, params, _ref3) {
         var $excel = _ref3.$excel;
         var excelStore = $excel.excelStore;
@@ -357,12 +357,12 @@
             column = params.column;
         var model = column.model;
         return [h('div', {
-          "class": 'vxe-input--wrapper vxe-excel-cell',
+          "class": 'vxe-textarea vxe-excel-cell',
           style: {
             height: "".concat(column.renderHeight, "px")
           }
         }, [h('textarea', {
-          "class": 'vxe-textarea',
+          "class": 'vxe-textarea--inner',
           style: {
             width: "".concat(column.renderWidth, "px")
           },

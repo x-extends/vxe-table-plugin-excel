@@ -38,17 +38,17 @@ $vxe-excel-column-checked-border-color: #409eff;
         .vxe-cell {
           padding: 0 2px;
           word-break: break-all;
-          .vxe-input--wrapper {
+          .vxe-textarea {
             height: inherit;
             position: relative;
-            .vxe-textarea {
+            .vxe-textarea--inner {
               position: absolute;
               overflow: hidden;
               padding: 0 2px;
               z-index: 1;
             }
-            .vxe-textarea,
-            .vxe-textarea:focus {
+            .vxe-textarea--inner,
+            .vxe-textarea--inner:focus {
               border-radius: 0;
               border: 0;
               outline: $vxe-excel-column-checked-border-width solid $vxe-excel-column-checked-border-color;
