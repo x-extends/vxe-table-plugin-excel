@@ -40,6 +40,7 @@ $vxe-excel-column-checked-border-color: #409eff;
           word-break: break-all;
           .vxe-textarea {
             height: inherit;
+            min-height: inherit;
             position: relative;
             .vxe-textarea--inner {
               position: absolute;

@@ -29,6 +29,7 @@
     word-break: break-all; }
     .vxe-table.vxe-editable.vxe-excel .vxe-body--column .vxe-cell .vxe-textarea {
       height: inherit;
+      min-height: inherit;
       position: relative; }
       .vxe-table.vxe-editable.vxe-excel .vxe-body--column .vxe-cell .vxe-textarea .vxe-textarea--inner {
         position: absolute;
