@@ -138,7 +138,7 @@ function registerComponent ({ Vue, Table }: any) {
     },
     computed: {
       tableProps (this: any): any {
-        let { $props, editConfig } = this
+        let { $props, editConfig, sortConfig, filterConfig } = this
         return XEUtils.assign({}, $props, {
           border: true,
           resizable: true,
@@ -148,6 +148,8 @@ function registerComponent ({ Vue, Table }: any) {
           mouseConfig: { selected: true, checked: true },
           keyboardConfig: { isArrow: true, isDel: true, isEnter: true, isTab: true, isCut: true, isEdit: true },
           editConfig: Object.assign({}, excelEditConfig, editConfig),
+          sortConfig: Object.assign({ showIcon: false }, sortConfig),
+          filterConfig: Object.assign({ showIcon: false }, filterConfig),
           optimization: {
             scrollX: {
               gt: 100
@@ -208,14 +210,15 @@ function registerComponent ({ Vue, Table }: any) {
             $table.clearFilter(column)
             break
           case 'filterSelect':
-            $table.filter(property)
-              .then((options: Array<any>) => {
-                if (options.length) {
-                  let option = options[0]
-                  option.data = XEUtils.get(row, property)
-                  option.checked = true
-                }
-              }).then(() => $table.updateData())
+            $table.setFilter(column, [
+              { data: XEUtils.get(row, property), checked: true }
+            ])
+            $table.updateData()
+            $table.clearIndexChecked()
+            $table.clearHeaderChecked()
+            $table.clearChecked()
+            $table.clearSelected()
+            $table.clearCopyed()
             break
           case 'clearSort':
             $table.clearSort()

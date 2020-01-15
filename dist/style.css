@@ -10,9 +10,6 @@
   -webkit-transition: none;
   transition: none;
   cursor: default; }
-  .vxe-table.vxe-editable.vxe-excel .vxe-header--column .vxe-sort-wrapper,
-  .vxe-table.vxe-editable.vxe-excel .vxe-header--column .vxe-filter-wrapper {
-    display: none; }
 
 .vxe-table.vxe-editable.vxe-excel .vxe-body--column {
   padding: 0;

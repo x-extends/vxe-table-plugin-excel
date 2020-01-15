@@ -126,7 +126,9 @@
       computed: {
         tableProps: function tableProps() {
           var $props = this.$props,
-              editConfig = this.editConfig;
+              editConfig = this.editConfig,
+              sortConfig = this.sortConfig,
+              filterConfig = this.filterConfig;
           return _xeUtils["default"].assign({}, $props, {
             border: true,
             resizable: true,
@@ -146,6 +148,12 @@
               isEdit: true
             },
             editConfig: Object.assign({}, excelEditConfig, editConfig),
+            sortConfig: Object.assign({
+              showIcon: false
+            }, sortConfig),
+            filterConfig: Object.assign({
+              showIcon: false
+            }, filterConfig),
             optimization: {
               scrollX: {
                 gt: 100
@@ -219,15 +227,16 @@
             break;
 
           case 'filterSelect':
-            $table.filter(property).then(function (options) {
-              if (options.length) {
-                var option = options[0];
-                option.data = _xeUtils["default"].get(row, property);
-                option.checked = true;
-              }
-            }).then(function () {
-              return $table.updateData();
-            });
+            $table.setFilter(column, [{
+              data: _xeUtils["default"].get(row, property),
+              checked: true
+            }]);
+            $table.updateData();
+            $table.clearIndexChecked();
+            $table.clearHeaderChecked();
+            $table.clearChecked();
+            $table.clearSelected();
+            $table.clearCopyed();
             break;
 
           case 'clearSort':
