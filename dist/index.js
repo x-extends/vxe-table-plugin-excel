@@ -97,6 +97,7 @@
   _exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME;
 
   (function (EXCEL_METHODS_NAME) {
+    /* eslint-disable no-unused-vars */
     EXCEL_METHODS_NAME["CONTEXT_MENU_CLICK_EVENT"] = "contextMenuClickEvent";
     EXCEL_METHODS_NAME["CELL_SPAN_METHOD"] = "cellSpanMethod";
   })(EXCEL_METHODS_NAME || (_exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME = {}));
@@ -137,7 +138,7 @@
             contextMenu: excelContextMenu,
             mouseConfig: {
               selected: true,
-              checked: true
+              range: true
             },
             keyboardConfig: {
               isArrow: true,
@@ -358,12 +359,13 @@
   var renderMap = {
     cell: {
       autofocus: 'textarea',
-      renderEdit: function renderEdit(h, editRender, params, _ref3) {
-        var $excel = _ref3.$excel;
+      renderEdit: function renderEdit(h, editRender, params) {
+        var $table = params.$table,
+            row = params.row,
+            column = params.column;
+        var $excel = $table.$parent;
         var excelStore = $excel.excelStore;
         var uploadRows = excelStore.uploadRows;
-        var row = params.row,
-            column = params.column;
         var model = column.model;
         return [h('div', {
           "class": 'vxe-textarea vxe-excel-cell',

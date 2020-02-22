@@ -104,17 +104,18 @@ const excelContextMenu = {
 }
 
 export enum EXCEL_METHODS_NAME {
+  /* eslint-disable no-unused-vars */
   CONTEXT_MENU_CLICK_EVENT = 'contextMenuClickEvent',
   CELL_SPAN_METHOD = 'cellSpanMethod'
 }
 
 export interface vExcelData {
   excelStore: {
-    uploadRows: Array<any>;
+    uploadRows: any[];
   }
   mergeStore: {
-    colList: Array<any>;
-    rowList: Array<any>;
+    colList: any[];
+    rowList: any[];
   }
 }
 
@@ -125,7 +126,7 @@ function registerComponent ({ Vue, Table }: any) {
       columns: Array
     },
     data () {
-      let data: vExcelData = {
+      const data: vExcelData = {
         excelStore: {
           uploadRows: []
         },
@@ -138,14 +139,14 @@ function registerComponent ({ Vue, Table }: any) {
     },
     computed: {
       tableProps (this: any): any {
-        let { $props, editConfig, sortConfig, filterConfig } = this
+        const { $props, editConfig, sortConfig, filterConfig } = this
         return XEUtils.assign({}, $props, {
           border: true,
           resizable: true,
           showOverflow: null,
           // spanMethod: this.cellSpanMethod,
           contextMenu: excelContextMenu,
-          mouseConfig: { selected: true, checked: true },
+          mouseConfig: { selected: true, range: true },
           keyboardConfig: { isArrow: true, isDel: true, isEnter: true, isTab: true, isCut: true, isEdit: true },
           editConfig: Object.assign({}, excelEditConfig, editConfig),
           sortConfig: Object.assign({ showIcon: false }, sortConfig),
@@ -162,18 +163,18 @@ function registerComponent ({ Vue, Table }: any) {
       }
     },
     watch: {
-      columns (this: any, value: Array<any>) {
+      columns (this: any, value: any[]) {
         this.loadColumn(value)
       }
     },
     mounted (this: any) {
-      let { columns } = this
+      const { columns } = this
       if (columns && columns.length) {
         this.loadColumn(this.columns)
       }
     },
     render (this: any, h: Function) {
-      let { $slots, $listeners, tableProps } = this
+      const { $slots, $listeners, tableProps } = this
       return h('vxe-table', {
         class: 'vxe-excel',
         props: tableProps,
@@ -185,8 +186,8 @@ function registerComponent ({ Vue, Table }: any) {
     },
     methods: {
       [EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] (this: any, { menu, row, column }: any, evnt: any) {
-        let $table = this.$refs.xTable
-        let { property } = column
+        const $table = this.$refs.xTable
+        const { property } = column
         switch (menu.code) {
           case 'clip':
             $table.handleCopyed(true, evnt)
@@ -243,12 +244,12 @@ function registerComponent ({ Vue, Table }: any) {
         }
       },
       [EXCEL_METHODS_NAME.CELL_SPAN_METHOD] (this: any, params: any) {
-        let { row, $rowIndex, column, data } = params
+        const { row, $rowIndex, column, data } = params
         const { colList, rowList } = this.mergeStore
         if (colList.indexOf(column) > -1) {
-          let prevRow = data[$rowIndex - 1]
+          const prevRow = data[$rowIndex - 1]
           let nextRow = data[$rowIndex + 1]
-          let isMerged = rowList.indexOf(row) > -1
+          const isMerged = rowList.indexOf(row) > -1
           if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
             return { rowspan: 0, colspan: 0 }
           } else {
@@ -285,7 +286,7 @@ interface posRangeData {
 }
 
 function getCursorPosition (textarea: any): posRangeData {
-  let rangeData: posRangeData = { text: '', start: 0, end: 0 }
+  const rangeData: posRangeData = { text: '', start: 0, end: 0 }
   if (textarea.setSelectionRange) {
     rangeData.start = textarea.selectionStart
     rangeData.end = textarea.selectionEnd
@@ -306,11 +307,12 @@ function setCursorPosition (textarea: any, rangeData: posRangeData) {
 const renderMap = {
   cell: {
     autofocus: 'textarea',
-    renderEdit (h: Function, editRender: any, params: any, { $excel }: any) {
-      let { excelStore } = $excel
-      let { uploadRows } = excelStore
-      let { row, column } = params
-      let { model } = column
+    renderEdit (h: Function, editRender: any, params: any) {
+      const { $table, row, column } = params
+      const $excel = $table.$parent
+      const { excelStore } = $excel
+      const { uploadRows } = excelStore
+      const { model } = column
       return [
         h('div', {
           class: 'vxe-textarea vxe-excel-cell',
@@ -328,7 +330,7 @@ const renderMap = {
             },
             on: {
               input (evnt: any) {
-                let inpElem = evnt.target
+                const inpElem = evnt.target
                 model.update = true
                 model.value = inpElem.value
                 if (inpElem.scrollHeight > inpElem.offsetHeight) {
@@ -345,11 +347,11 @@ const renderMap = {
                 }
               },
               keydown (evnt: any) {
-                let inpElem = evnt.target
+                const inpElem = evnt.target
                 if (evnt.altKey && evnt.keyCode === 13) {
                   evnt.preventDefault()
                   evnt.stopPropagation()
-                  let rangeData = getCursorPosition(inpElem)
+                  const rangeData = getCursorPosition(inpElem)
                   let pos = rangeData.end
                   let cellValue = inpElem.value
                   cellValue = `${cellValue.slice(0, pos)}\n${cellValue.slice(pos, cellValue.length)}`
@@ -369,7 +371,7 @@ const renderMap = {
       ]
     },
     renderCell (h: Function, editRender: any, params: any) {
-      let { row, column } = params
+      const { row, column } = params
       return [
         h('span', {
           domProps: {
@@ -386,7 +388,7 @@ const renderMap = {
  */
 export const VXETablePluginVirtualTree = {
   install (xtable: typeof VXETable) {
-    let { renderer, v } = xtable
+    const { renderer, v } = xtable
     if (v === 'v1') {
       throw new Error('[vxe-table-plugin-virtual-tree] >= V2 version is required.')
     }
