@@ -7,11 +7,13 @@
 .vxe-table.vxe-editable.vxe-excel .vxe-header--column {
   padding: 4px 0;
   font-size: 12px;
+  -webkit-transition: none;
   transition: none;
   cursor: default; }
 
 .vxe-table.vxe-editable.vxe-excel .vxe-body--column {
   padding: 0;
+  -webkit-transition: none;
   transition: none;
   height: auto;
   line-height: 24px;

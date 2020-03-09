@@ -234,7 +234,7 @@ function registerComponent ({ Vue, Table }: any) {
             $table.exportData({ isHeader: false })
             break
           case 'merge':
-            const { columns, rows } = $table.getMouseCheckeds()
+            const { columns, rows } = $table.getSelectedRanges ? $table.getSelectedRanges() : $table.getMouseCheckeds()
             const { colList, rowList } = this.mergeStore
             if (rows.length && columns.length) {
               rows.forEach((row: any) => rowList.indexOf(row) === -1 ? rowList.push(row) : 0)

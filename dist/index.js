@@ -259,9 +259,9 @@
             break;
 
           case 'merge':
-            var _$table$getMouseCheck = $table.getMouseCheckeds(),
-                columns = _$table$getMouseCheck.columns,
-                rows = _$table$getMouseCheck.rows;
+            var _ref3 = $table.getSelectedRanges ? $table.getSelectedRanges() : $table.getMouseCheckeds(),
+                columns = _ref3.columns,
+                rows = _ref3.rows;
 
             var _this$mergeStore = this.mergeStore,
                 colList = _this$mergeStore.colList,
