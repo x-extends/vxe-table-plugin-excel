@@ -16,7 +16,7 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports["default"] = _exports.VXETablePluginVirtualTree = _exports.EXCEL_METHODS_NAME = void 0;
+  _exports["default"] = _exports.VXETablePluginExcel = _exports.EXCEL_METHODS_NAME = void 0;
   _xeUtils = _interopRequireDefault(_xeUtils);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -434,16 +434,16 @@
     }
   };
   /**
-   * 基于 vxe-table 表格的增强插件，实现简单的虚拟树表格
+   * 基于 vxe-table 表格的增强插件，实现简单的 EXCEL 表格
    */
 
-  var VXETablePluginVirtualTree = {
+  var VXETablePluginExcel = {
     install: function install(xtable) {
       var renderer = xtable.renderer,
           v = xtable.v;
 
-      if (v === 'v1') {
-        throw new Error('[vxe-table-plugin-virtual-tree] >= V2 version is required.');
+      if (v !== 'v2') {
+        throw new Error('[vxe-table-plugin-excel] V2 version is required.');
       } // 添加到渲染器
 
 
@@ -452,12 +452,12 @@
       registerComponent(xtable);
     }
   };
-  _exports.VXETablePluginVirtualTree = VXETablePluginVirtualTree;
+  _exports.VXETablePluginExcel = VXETablePluginExcel;
 
   if (typeof window !== 'undefined' && window.VXETable) {
-    window.VXETable.use(VXETablePluginVirtualTree);
+    window.VXETable.use(VXETablePluginExcel);
   }
 
-  var _default = VXETablePluginVirtualTree;
+  var _default = VXETablePluginExcel;
   _exports["default"] = _default;
 });

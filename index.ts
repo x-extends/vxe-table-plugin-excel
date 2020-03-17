@@ -384,13 +384,13 @@ const renderMap = {
 }
 
 /**
- * 基于 vxe-table 表格的增强插件，实现简单的虚拟树表格
+ * 基于 vxe-table 表格的增强插件，实现简单的 EXCEL 表格
  */
-export const VXETablePluginVirtualTree = {
+export const VXETablePluginExcel = {
   install (xtable: typeof VXETable) {
     const { renderer, v } = xtable
-    if (v === 'v1') {
-      throw new Error('[vxe-table-plugin-virtual-tree] >= V2 version is required.')
+    if (v !== 'v2') {
+      throw new Error('[vxe-table-plugin-excel] V2 version is required.')
     }
     // 添加到渲染器
     renderer.mixin(renderMap)
@@ -400,7 +400,7 @@ export const VXETablePluginVirtualTree = {
 }
 
 if (typeof window !== 'undefined' && window.VXETable) {
-  window.VXETable.use(VXETablePluginVirtualTree)
+  window.VXETable.use(VXETablePluginExcel)
 }
 
-export default VXETablePluginVirtualTree
+export default VXETablePluginExcel
