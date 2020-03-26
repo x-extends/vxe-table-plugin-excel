@@ -16,13 +16,12 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports["default"] = _exports.VXETablePluginExcel = _exports.EXCEL_METHODS_NAME = void 0;
+  _exports["default"] = _exports.VXETablePluginExcel = void 0;
   _xeUtils = _interopRequireDefault(_xeUtils);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+  /* eslint-enable no-unused-vars */
   var excelEditConfig = {
     trigger: 'dblclick',
     mode: 'cell',
@@ -58,13 +57,7 @@
       }, {
         code: 'clearData',
         name: '清除内容(Del)'
-      }], // [
-      //   {
-      //     code: 'merge',
-      //     name: '合并单元格'
-      //   }
-      // ],
-      [{
+      }], [{
         code: 'filter',
         name: '筛选',
         children: [{
@@ -93,36 +86,21 @@
       }]]
     }
   };
-  var EXCEL_METHODS_NAME;
-  _exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME;
 
-  (function (EXCEL_METHODS_NAME) {
-    /* eslint-disable no-unused-vars */
-    EXCEL_METHODS_NAME["CONTEXT_MENU_CLICK_EVENT"] = "contextMenuClickEvent";
-    EXCEL_METHODS_NAME["CELL_SPAN_METHOD"] = "cellSpanMethod";
-  })(EXCEL_METHODS_NAME || (_exports.EXCEL_METHODS_NAME = EXCEL_METHODS_NAME = {}));
-
-  function registerComponent(_ref) {
-    var _methods;
-
-    var Vue = _ref.Vue,
-        Table = _ref.Table;
+  function registerComponent(params) {
+    var _Vue = params.Vue;
+    var Table = params.Table;
     var Excel = {
       name: 'VxeExcel',
       props: {
         columns: Array
       },
       data: function data() {
-        var data = {
+        return {
           excelStore: {
             uploadRows: []
-          },
-          mergeStore: {
-            colList: [],
-            rowList: []
           }
         };
-        return data;
       },
       computed: {
         tableProps: function tableProps() {
@@ -134,7 +112,6 @@
             border: true,
             resizable: true,
             showOverflow: null,
-            // spanMethod: this.cellSpanMethod,
             contextMenu: excelContextMenu,
             mouseConfig: {
               selected: true,
@@ -160,7 +137,7 @@
                 gt: 100
               },
               scrollY: {
-                gt: 100
+                gt: 200
               }
             }
           });
@@ -191,130 +168,76 @@
           ref: 'xTable'
         }, $slots["default"]);
       },
-      methods: (_methods = {}, _defineProperty(_methods, EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT, function (_ref2, evnt) {
-        var menu = _ref2.menu,
-            row = _ref2.row,
-            column = _ref2.column;
-        var $table = this.$refs.xTable;
-        var property = column.property;
+      methods: {
+        contextMenuClickEvent: function contextMenuClickEvent(params, evnt) {
+          var menu = params.menu,
+              row = params.row,
+              column = params.column;
+          var $table = this.$refs.xTable;
+          var property = column.property;
 
-        switch (menu.code) {
-          case 'clip':
-            $table.handleCopyed(true, evnt);
-            break;
+          switch (menu.code) {
+            case 'clip':
+              $table.handleCopyed(true, evnt);
+              break;
 
-          case 'copy':
-            $table.handleCopyed(false, evnt);
-            break;
+            case 'copy':
+              $table.handleCopyed(false, evnt);
+              break;
 
-          case 'paste':
-            $table.handlePaste(evnt);
-            break;
+            case 'paste':
+              $table.handlePaste(evnt);
+              break;
 
-          case 'insert':
-            $table.insertAt({}, row);
-            break;
+            case 'insert':
+              $table.insertAt({}, row);
+              break;
 
-          case 'remove':
-            $table.remove(row);
-            break;
+            case 'remove':
+              $table.remove(row);
+              break;
 
-          case 'clearData':
-            $table.clearData(row, property);
-            break;
+            case 'clearData':
+              $table.clearData(row, property);
+              break;
 
-          case 'clearFilter':
-            $table.clearFilter(column);
-            break;
+            case 'clearFilter':
+              $table.clearFilter(column);
+              break;
 
-          case 'filterSelect':
-            $table.setFilter(column, [{
-              data: _xeUtils["default"].get(row, property),
-              checked: true
-            }]);
-            $table.updateData();
-            $table.clearIndexChecked();
-            $table.clearHeaderChecked();
-            $table.clearChecked();
-            $table.clearSelected();
-            $table.clearCopyed();
-            break;
+            case 'filterSelect':
+              $table.setFilter(column, [{
+                data: _xeUtils["default"].get(row, property),
+                checked: true
+              }]);
+              $table.updateData();
+              $table.clearIndexChecked();
+              $table.clearHeaderChecked();
+              $table.clearChecked();
+              $table.clearSelected();
+              $table.clearCopyed();
+              break;
 
-          case 'clearSort':
-            $table.clearSort();
-            break;
+            case 'clearSort':
+              $table.clearSort();
+              break;
 
-          case 'sortAsc':
-            $table.sort(property, 'asc');
-            break;
+            case 'sortAsc':
+              $table.sort(property, 'asc');
+              break;
 
-          case 'sortDesc':
-            $table.sort(property, 'desc');
-            break;
+            case 'sortDesc':
+              $table.sort(property, 'desc');
+              break;
 
-          case 'exportAll':
-            $table.exportData({
-              isHeader: false
-            });
-            break;
-
-          case 'merge':
-            var _ref3 = $table.getSelectedRanges ? $table.getSelectedRanges() : $table.getMouseCheckeds(),
-                columns = _ref3.columns,
-                rows = _ref3.rows;
-
-            var _this$mergeStore = this.mergeStore,
-                colList = _this$mergeStore.colList,
-                rowList = _this$mergeStore.rowList;
-
-            if (rows.length && columns.length) {
-              rows.forEach(function (row) {
-                return rowList.indexOf(row) === -1 ? rowList.push(row) : 0;
+            case 'exportAll':
+              $table.exportData({
+                isHeader: false
               });
-              columns.forEach(function (column) {
-                return colList.indexOf(column) === -1 ? colList.push(column) : 0;
-              });
-            }
-
-            break;
-        }
-      }), _defineProperty(_methods, EXCEL_METHODS_NAME.CELL_SPAN_METHOD, function (params) {
-        var row = params.row,
-            $rowIndex = params.$rowIndex,
-            column = params.column,
-            data = params.data;
-        var _this$mergeStore2 = this.mergeStore,
-            colList = _this$mergeStore2.colList,
-            rowList = _this$mergeStore2.rowList;
-
-        if (colList.indexOf(column) > -1) {
-          var prevRow = data[$rowIndex - 1];
-          var nextRow = data[$rowIndex + 1];
-          var isMerged = rowList.indexOf(row) > -1;
-
-          if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
-            return {
-              rowspan: 0,
-              colspan: 0
-            };
-          } else {
-            var countRowspan = 1;
-
-            if (isMerged) {
-              while (nextRow && rowList.indexOf(nextRow) > -1) {
-                nextRow = data[++countRowspan + $rowIndex];
-              }
-            }
-
-            if (countRowspan > 1) {
-              return {
-                rowspan: countRowspan,
-                colspan: 1
-              };
-            }
+              break;
           }
         }
-      }), _methods)
+      }
     }; // 继承 Table
 
     _xeUtils["default"].assign(Excel.props, Table.props);
@@ -325,7 +248,7 @@
       };
     });
 
-    Vue.component(Excel.name, Excel);
+    _Vue.component(Excel.name, Excel);
   }
 
   var rowHeight = 24;
@@ -361,11 +284,11 @@
       autofocus: 'textarea',
       renderEdit: function renderEdit(h, editRender, params) {
         var $table = params.$table,
-            row = params.row,
-            column = params.column;
+            row = params.row;
         var $excel = $table.$parent;
         var excelStore = $excel.excelStore;
         var uploadRows = excelStore.uploadRows;
+        var column = params.column;
         var model = column.model;
         return [h('div', {
           "class": 'vxe-textarea vxe-excel-cell',
@@ -394,7 +317,7 @@
                 }
               }
             },
-            change: function change(evnt) {
+            change: function change() {
               if (uploadRows.indexOf(row) === -1) {
                 uploadRows.push(row);
               }

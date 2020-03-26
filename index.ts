@@ -1,5 +1,16 @@
+/* eslint-disable no-unused-vars */
+import Vue, { CreateElement } from 'vue'
 import XEUtils from 'xe-utils/methods/xe-utils'
-import VXETable from 'vxe-table/lib/vxe-table'
+import {
+  VXETable,
+  ColumnConfig,
+  ColumnEditRenderOptions,
+  ColumnEditRenderParams,
+  ColumnCellRenderOptions,
+  ColumnCellRenderParams,
+  MenuLinkParams
+} from 'vxe-table/lib/vxe-table'
+/* eslint-enable no-unused-vars */
 
 const excelEditConfig = {
   trigger: 'dblclick',
@@ -53,12 +64,6 @@ const excelContextMenu = {
           name: '清除内容(Del)'
         }
       ],
-      // [
-      //   {
-      //     code: 'merge',
-      //     name: '合并单元格'
-      //   }
-      // ],
       [
         {
           code: 'filter',
@@ -103,48 +108,28 @@ const excelContextMenu = {
   }
 }
 
-export enum EXCEL_METHODS_NAME {
-  /* eslint-disable no-unused-vars */
-  CONTEXT_MENU_CLICK_EVENT = 'contextMenuClickEvent',
-  CELL_SPAN_METHOD = 'cellSpanMethod'
-}
-
-export interface vExcelData {
-  excelStore: {
-    uploadRows: any[];
-  }
-  mergeStore: {
-    colList: any[];
-    rowList: any[];
-  }
-}
-
-function registerComponent ({ Vue, Table }: any) {
-  const Excel: any = {
+function registerComponent (params: any) {
+  const _Vue: typeof Vue = params.Vue
+  const Table: any = params.Table
+  const Excel: { [key: string]: any } = {
     name: 'VxeExcel',
     props: {
       columns: Array
     },
     data () {
-      const data: vExcelData = {
+      return {
         excelStore: {
           uploadRows: []
-        },
-        mergeStore: {
-          colList: [],
-          rowList: []
         }
       }
-      return data
     },
     computed: {
-      tableProps (this: any): any {
+      tableProps (this: any) {
         const { $props, editConfig, sortConfig, filterConfig } = this
         return XEUtils.assign({}, $props, {
           border: true,
           resizable: true,
           showOverflow: null,
-          // spanMethod: this.cellSpanMethod,
           contextMenu: excelContextMenu,
           mouseConfig: { selected: true, range: true },
           keyboardConfig: { isArrow: true, isDel: true, isEnter: true, isTab: true, isCut: true, isEdit: true },
@@ -156,14 +141,14 @@ function registerComponent ({ Vue, Table }: any) {
               gt: 100
             },
             scrollY: {
-              gt: 100
+              gt: 200
             }
           }
         })
       }
     },
     watch: {
-      columns (this: any, value: any[]) {
+      columns (this: any, value: ColumnConfig[]) {
         this.loadColumn(value)
       }
     },
@@ -173,7 +158,7 @@ function registerComponent ({ Vue, Table }: any) {
         this.loadColumn(this.columns)
       }
     },
-    render (this: any, h: Function) {
+    render (this: any, h: CreateElement) {
       const { $slots, $listeners, tableProps } = this
       return h('vxe-table', {
         class: 'vxe-excel',
@@ -185,7 +170,8 @@ function registerComponent ({ Vue, Table }: any) {
       }, $slots.default)
     },
     methods: {
-      [EXCEL_METHODS_NAME.CONTEXT_MENU_CLICK_EVENT] (this: any, { menu, row, column }: any, evnt: any) {
+      contextMenuClickEvent (this: any, params: MenuLinkParams, evnt: any) {
+        const { menu, row, column } = params
         const $table = this.$refs.xTable
         const { property } = column
         switch (menu.code) {
@@ -233,48 +219,18 @@ function registerComponent ({ Vue, Table }: any) {
           case 'exportAll':
             $table.exportData({ isHeader: false })
             break
-          case 'merge':
-            const { columns, rows } = $table.getSelectedRanges ? $table.getSelectedRanges() : $table.getMouseCheckeds()
-            const { colList, rowList } = this.mergeStore
-            if (rows.length && columns.length) {
-              rows.forEach((row: any) => rowList.indexOf(row) === -1 ? rowList.push(row) : 0)
-              columns.forEach((column: any) => colList.indexOf(column) === -1 ? colList.push(column) : 0)
-            }
-            break
-        }
-      },
-      [EXCEL_METHODS_NAME.CELL_SPAN_METHOD] (this: any, params: any) {
-        const { row, $rowIndex, column, data } = params
-        const { colList, rowList } = this.mergeStore
-        if (colList.indexOf(column) > -1) {
-          const prevRow = data[$rowIndex - 1]
-          let nextRow = data[$rowIndex + 1]
-          const isMerged = rowList.indexOf(row) > -1
-          if (prevRow && isMerged && rowList.indexOf(prevRow) > -1) {
-            return { rowspan: 0, colspan: 0 }
-          } else {
-            let countRowspan = 1
-            if (isMerged) {
-              while (nextRow && rowList.indexOf(nextRow) > -1) {
-                nextRow = data[++countRowspan + $rowIndex]
-              }
-            }
-            if (countRowspan > 1) {
-              return { rowspan: countRowspan, colspan: 1 }
-            }
-          }
         }
       }
     }
   }
   // 继承 Table
   XEUtils.assign(Excel.props, Table.props)
-  XEUtils.each(Table.methods, (cb: Function, name: EXCEL_METHODS_NAME) => {
+  XEUtils.each(Table.methods, (cb: Function, name: string) => {
     Excel.methods[name] = function (this: any) {
       return this.$refs.xTable[name].apply(this.$refs.xTable, arguments)
     }
   })
-  Vue.component(Excel.name, Excel)
+  _Vue.component(Excel.name, Excel)
 }
 
 const rowHeight: number = 24
@@ -307,12 +263,13 @@ function setCursorPosition (textarea: any, rangeData: posRangeData) {
 const renderMap = {
   cell: {
     autofocus: 'textarea',
-    renderEdit (h: Function, editRender: any, params: any) {
-      const { $table, row, column } = params
-      const $excel = $table.$parent
+    renderEdit (h: CreateElement, editRender: ColumnEditRenderOptions, params: ColumnEditRenderParams) {
+      const { $table, row } = params
+      const $excel: any = $table.$parent
       const { excelStore } = $excel
       const { uploadRows } = excelStore
-      const { model } = column
+      const column: any = params.column
+      const model: { value: any, update: boolean } = column.model
       return [
         h('div', {
           class: 'vxe-textarea vxe-excel-cell',
@@ -341,7 +298,7 @@ const renderMap = {
                   }
                 }
               },
-              change (evnt: any) {
+              change () {
                 if (uploadRows.indexOf(row) === -1) {
                   uploadRows.push(row)
                 }
@@ -370,7 +327,7 @@ const renderMap = {
         ])
       ]
     },
-    renderCell (h: Function, editRender: any, params: any) {
+    renderCell (h: CreateElement, editRender: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
       const { row, column } = params
       return [
         h('span', {
