@@ -1,6 +1,6 @@
 {
   "name": "vxe-table-plugin-excel",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "基于 vxe-table 表格的增强插件，实现简单的 Excel 表格",
   "scripts": {
     "lib": "gulp build"
@@ -49,11 +49,11 @@
     "prettier": "^1.18.2",
     "typescript": "^3.8.2",
     "vue": "^2.6.11",
-    "vxe-table": "^2.8.33",
-    "xe-utils": "^2.4.2"
+    "vxe-table": "^2.9.0",
+    "xe-utils": "^2.4.4"
   },
   "peerDependencies": {
-    "vxe-table": ">=2.8.33",
+    "vxe-table": ">=2.9.0",
     "xe-utils": ">=2.4.0"
   },
   "repository": {
