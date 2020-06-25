@@ -1,6 +1,6 @@
 {
   "name": "vxe-table-plugin-excel",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "基于 vxe-table 表格的增强插件，实现简单的 Excel 表格",
   "scripts": {
     "lib": "gulp build"
@@ -58,7 +58,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xuliangzhan/vxe-table-plugin-excel.git"
+    "url": "git+https://github.com/x-extends/vxe-table-plugin-excel.git"
   },
   "keywords": [
     "vxe-table-plugin-excel"
@@ -69,7 +69,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xuliangzhan/vxe-table-plugin-excel/issues"
+    "url": "https://github.com/x-extends/vxe-table-plugin-excel/issues"
   },
-  "homepage": "https://github.com/xuliangzhan/vxe-table-plugin-excel#readme"
+  "homepage": "https://github.com/x-extends/vxe-table-plugin-excel#readme"
 }
