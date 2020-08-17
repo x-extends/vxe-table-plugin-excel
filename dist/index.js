@@ -115,7 +115,7 @@
             contextMenu: excelContextMenu,
             mouseConfig: {
               selected: true,
-              range: true
+              checked: true
             },
             keyboardConfig: {
               isArrow: true,

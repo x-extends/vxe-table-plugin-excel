@@ -131,7 +131,7 @@ function registerComponent (params: any) {
           resizable: true,
           showOverflow: null,
           contextMenu: excelContextMenu,
-          mouseConfig: { selected: true, range: true },
+          mouseConfig: { selected: true, checked: true },
           keyboardConfig: { isArrow: true, isDel: true, isEnter: true, isTab: true, isCut: true, isEdit: true },
           editConfig: Object.assign({}, excelEditConfig, editConfig),
           sortConfig: Object.assign({ showIcon: false }, sortConfig),
